@@ -100,18 +100,18 @@ def upload_predict(upload_image, model):
 
     # Run the model
     output = model(img_tensor)
-    st.write(output.detach().numpy())
-    # get softmax of output
+    # st.write(output.detach().numpy())
+    # # get softmax of output
 
-    #output = F.softmax(output, dim=1)
+    # #output = F.softmax(output, dim=1)
 
-    probab, pred = torch.max(output, 1)
-    print(output, pred, probab, probab.item())
-    pred_class = pred.item()
-    probab_value = probab.item()
+    # probab, pred = torch.max(output, 1)
+    # print(output, pred, probab, probab.item())
+    # pred_class = pred.item()
+    # probab_value = probab.item()
 
     
-    return pred_class, probab_value
+    # return pred_class, probab_value
 
 # Main Code Block
 
@@ -156,6 +156,6 @@ else:
     st.image(image_disp, use_column_width= False)
 
     ### CLASSIFY IMAGE
-    label, score = upload_predict(image, model)
-    st.write("### Species: ",species_all[label])
-    st.write(f"#### Confidence : {score*100:.2f} % ")
+    upload_predict(image, model)
+    # st.write("### Species: ",species_all[label])
+    # st.write(f"#### Confidence : {score*100:.2f} % ")
