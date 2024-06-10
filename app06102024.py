@@ -103,7 +103,7 @@ def upload_predict(upload_image, model):
     # img_tensor = inputs.unsqueeze(0)
 
     # Run the model
-    output = model(inputs.cuda())
+    output = model(inputs)
     # st.write(output.detach().numpy())
     # # get softmax of output
 
