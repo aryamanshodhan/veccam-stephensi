@@ -5,10 +5,8 @@ import torch
 from torchvision import transforms
 import torch.nn.functional as F
 from util_functions import pad_image_to_square
+from ultralytics import YOLO
 import cv2
-
-# import ssl
-# ssl._create_default_https_context = ssl._create_unverified_context
 
 @st.cache_resource
 def load_model(): 
@@ -30,8 +28,9 @@ def load_yolo_model():
     Returns:
         yolo: A TorchHub model object representing the YOLOv5 model.
     """
-    yolo = torch.hub.load('ultralytics/yolov5', 'custom', path='models/yolo_best_0610.pt', force_reload=True)
+    yolo = YOLO("models/yolo_best_0610.pt")
     yolo.to('cpu')
+    st.write("yolo_best_0610.pt loaded successfully!")
     return yolo
 
 def yolo_crop(image):
@@ -108,5 +107,5 @@ else:
     st.image(image_disp, use_column_width= False)
 
     ### YOLO CROP
-    # genus,conf,yolo_cropped_image = yolo_crop(image)
-    # st.write("### Shape of the cropped image is", yolo_cropped_image.size)
+    genus,conf,yolo_cropped_image = yolo_crop(image)
+    st.write("### Shape of the cropped image is", yolo_cropped_image.size)
