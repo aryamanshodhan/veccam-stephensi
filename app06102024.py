@@ -8,8 +8,8 @@ from util_functions import pad_image_to_square
 from ultralytics import YOLO
 import cv2
 
-import ssl
-ssl._create_default_https_context = ssl._create_unverified_context
+# import ssl
+# ssl._create_default_https_context = ssl._create_unverified_context
 
 @st.cache_resource
 def load_model(): 
@@ -75,6 +75,8 @@ def yolo_crop(image):
        st.write("No mosquito detected")
     return image
 
+
+
 # Main Code Block
 
 st.write("""
@@ -115,3 +117,4 @@ else:
     ### YOLO CROP
     genus,conf,yolo_cropped_image = yolo_crop(image)
     st.write("### Shape of the cropped image is", yolo_cropped_image.size)
+
