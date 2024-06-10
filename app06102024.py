@@ -31,6 +31,44 @@ def load_yolo_model():
     yolo.to("cpu")
     return yolo
 
+def yolo_crop(image):
+    """Apply YOLO object detection on an image and crop it around the detected mosquito.
+
+    Args:
+        image (PIL.Image.Image): Input image to crop.
+
+    Returns:
+        PIL.Image.Image: Cropped image centered around the detected mosquito.
+
+    Raises:
+        TypeError: If the input image is not a PIL image.
+
+    Note:
+        This function requires the `load_yolo` function to be defined and available in the current namespace.
+        The YOLO model used by `load_yolo` must be able to detect mosquitoes in the input image.
+    """
+
+    yolo = load_yolo_model()
+    results = yolo(image)
+    try: 
+       # crop the image
+        xmin = int(results.xyxy[0].numpy()[0][0])
+        ymin = int(results.xyxy[0].numpy()[0][1])
+        xmax = int(results.xyxy[0].numpy()[0][2])
+        ymax = int(results.xyxy[0].numpy()[0][3])
+        conf0=results.xyxy[0].numpy()[0][4]
+        class0=results.xyxy[0].numpy()[0][-1]
+        im_crop = image.crop((xmin, ymin, xmax , ymax))
+        print("Image cropped successfully!")
+        print('Genus',class0)
+        return class0,conf0,im_crop
+
+    except:
+       st.write("No mosquito detected")
+    return image
+
+# Main Code Block
+
 st.write("""
          # VectorCAM Stephensi Detector 06/10/2024
          """
@@ -44,7 +82,12 @@ with st.spinner("Models are loading..."):
 
 file = st.file_uploader("Upload the image to be classified", type=["jpg", "png"])
 
-# Main Code Block
+transforms = transforms.Compose([
+    transforms.Resize([300,300]),
+    transforms.ToTensor(),
+])
+
+species_all = ["Anopheles Stephensi, Not Anopheles Stephensi"]
 
 if file is None:
     st.text("#### Please upload an image file!")
@@ -59,3 +102,7 @@ else:
     image_disp.thumbnail(max_size)
     st.write("### Uploaded Image")
     st.image(image_disp, use_column_width= False)
+
+    ### YOLO CROP
+    genus,conf,yolo_cropped_image = yolo_crop(image)
+    st.write("### Shape of the cropped image is", yolo_cropped_image.size)
