@@ -8,11 +8,7 @@ from util_functions import pad_image_to_square
 from ultralytics import YOLO
 import cv2
 
-device = torch.device("cuda")
-# if torch.cuda.is_available():
-#     device = torch.device('cuda')
-# else:
-#     device = torch.device('cpu')
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 @st.cache_resource
 def load_model(): 
@@ -23,6 +19,7 @@ def load_model():
         model (torch.nn.Module): The loaded PyTorch model.
     """
     model = torch.load("models/species_best_0610.pt", map_location=device)
+    model.to(device)
     st.write("species_best_0610.pt loaded successfully!")
     return model
 
@@ -84,7 +81,7 @@ def preprocess_image(image):
         transforms.Resize([300,300]),
         transforms.ToTensor(),
     ])
-    image = t(image)
+    image = t(image).unsqueeze(0).to(device)
     return image
 
 def upload_predict(upload_image, model):
@@ -104,7 +101,7 @@ def upload_predict(upload_image, model):
 
     # Run the model
     output = model(inputs)
-    # st.write(output.detach().numpy())
+    st.write(output.detach().cpu().numpy())
     # # get softmax of output
 
     # #output = F.softmax(output, dim=1)
