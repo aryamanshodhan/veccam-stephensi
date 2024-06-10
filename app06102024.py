@@ -80,6 +80,7 @@ device = torch.device("cpu")
 with st.spinner("Models are loading..."):
     st.write("#### Models:")
     model = load_model()
+    yolo = load_yolo_model()
 
 file = st.file_uploader("Upload the image to be classified", type=["jpg", "png"])
 
