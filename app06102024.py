@@ -92,13 +92,12 @@ def upload_predict(upload_image, model):
     """
     inputs = preprocess_image(upload_image)
     img_tensor = inputs.unsqueeze(0)
-
     output = model(img_tensor)
+
+    # get softmax of output
+    output = F.softmax(output, dim=1)
     st.write(output.detach().numpy())
-    # # get softmax of output
-
-    # #output = F.softmax(output, dim=1)
-
+    
     # probab, pred = torch.max(output, 1)
     # print(output, pred, probab, probab.item())
     # pred_class = pred.item()
