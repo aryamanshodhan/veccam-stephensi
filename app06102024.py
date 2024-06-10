@@ -7,6 +7,9 @@ import torch.nn.functional as F
 from util_functions import pad_image_to_square
 import cv2
 
+# import ssl
+# ssl._create_default_https_context = ssl._create_unverified_context
+
 @st.cache_resource
 def load_model(): 
     """
@@ -105,5 +108,5 @@ else:
     st.image(image_disp, use_column_width= False)
 
     ### YOLO CROP
-    genus,conf,yolo_cropped_image = yolo_crop(image)
-    st.write("### Shape of the cropped image is", yolo_cropped_image.size)
+    # genus,conf,yolo_cropped_image = yolo_crop(image)
+    # st.write("### Shape of the cropped image is", yolo_cropped_image.size)
