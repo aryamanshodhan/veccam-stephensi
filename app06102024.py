@@ -27,8 +27,9 @@ def load_yolo_model():
     Returns:
         yolo: A TorchHub model object representing the YOLOv5 model.
     """
-    yolo = torch.hub.load("ultralytics/yolov5", "custom", path="model/yolo_best_0610.pt", force_reload=True)
-    yolo.to("cpu")
+    yolo = torch.load("model/yolo_best_0610.pt", map_location="cpu")
+    # yolo = torch.hub.load("ultralytics/yolov5", "custom", path="model/yolo_best_0610.pt", force_reload=True)
+    # yolo.to("cpu")
     return yolo
 
 def yolo_crop(image):
