@@ -50,22 +50,22 @@ def yolo_crop(image):
 
     yolo = load_yolo_model()
     results = yolo(image)
-    try: 
-       # crop the image
-        xmin = int(results.xyxy[0].numpy()[0][0])
-        ymin = int(results.xyxy[0].numpy()[0][1])
-        xmax = int(results.xyxy[0].numpy()[0][2])
-        ymax = int(results.xyxy[0].numpy()[0][3])
-        conf0=results.xyxy[0].numpy()[0][4]
-        class0=results.xyxy[0].numpy()[0][-1]
-        im_crop = image.crop((xmin, ymin, xmax , ymax))
-        print("Image cropped successfully!")
-        print('Genus',class0)
-        return class0,conf0,im_crop
+    # try: 
+    #    # crop the image
+    #     xmin = int(results.xyxy[0].numpy()[0][0])
+    #     ymin = int(results.xyxy[0].numpy()[0][1])
+    #     xmax = int(results.xyxy[0].numpy()[0][2])
+    #     ymax = int(results.xyxy[0].numpy()[0][3])
+    #     conf0=results.xyxy[0].numpy()[0][4]
+    #     class0=results.xyxy[0].numpy()[0][-1]
+    #     im_crop = image.crop((xmin, ymin, xmax , ymax))
+    #     print("Image cropped successfully!")
+    #     print('Genus',class0)
+    #     return class0,conf0,im_crop
 
-    except:
-       st.write("No mosquito detected")
-    return image
+    # except:
+    #    st.write("No mosquito detected")
+    # return image
 
 # Main Code Block
 
@@ -104,5 +104,5 @@ else:
     st.image(image_disp, use_column_width= False)
 
     ### YOLO CROP
-    genus,conf,yolo_cropped_image = yolo_crop(image)
-    st.write("### Shape of the cropped image is", yolo_cropped_image.size)
+    yolo_crop(image)
+    # st.write("### Shape of the cropped image is", yolo_cropped_image.size)
