@@ -17,6 +17,7 @@ def load_model():
         model (torch.nn.Module): The loaded PyTorch model.
     """
     model = torch.load("models/species_best_0610.pt", map_location=device)
+    model = model.module()
     st.write("species_best_0610.pt loaded successfully!")
     return model
 
