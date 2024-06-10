@@ -97,11 +97,11 @@ def upload_predict(upload_image, model):
     # get softmax of output
     output = F.softmax(output, dim=1)
     st.write(output.detach().numpy())
-    
-    # probab, pred = torch.max(output, 1)
-    # print(output, pred, probab, probab.item())
-    # pred_class = pred.item()
-    # probab_value = probab.item()
+
+    probab, pred = torch.max(output, 1)
+    print(output, pred, probab, probab.item())
+    pred_class = pred.item()
+    probab_value = probab.item()
 
     
     # return pred_class, probab_value
