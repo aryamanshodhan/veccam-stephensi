@@ -100,10 +100,10 @@ def upload_predict(upload_image, model):
     - probab_value: A float representing the predicted class probability of the image.
     """
     inputs = preprocess_image(upload_image)
-    img_tensor = inputs.unsqueeze(0)
+    # img_tensor = inputs.unsqueeze(0)
 
     # Run the model
-    output = model(img_tensor)
+    output = model(inputs)
     # st.write(output.detach().numpy())
     # # get softmax of output
 
