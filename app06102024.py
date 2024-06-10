@@ -11,6 +11,11 @@ import cv2
 # import ssl
 # ssl._create_default_https_context = ssl._create_unverified_context
 
+if torch.cuda.is_available():
+    device = torch.device('cuda')
+else:
+    device = torch.device('cpu')
+
 @st.cache_resource
 def load_model(): 
     """
@@ -19,7 +24,7 @@ def load_model():
     Returns:
         model (torch.nn.Module): The loaded PyTorch model.
     """
-    model = torch.load("models/species_best_0610.pt", map_location="cpu")
+    model = torch.load("models/species_best_0610.pt", map_location=device)
     st.write("species_best_0610.pt loaded successfully!")
     return model
 
@@ -32,7 +37,7 @@ def load_yolo_model():
         yolo: A TorchHub model object representing the YOLOv5 model.
     """
     yolo = torch.hub.load('ultralytics/yolov5', 'custom', path='models/yolo_best_0610.pt', force_reload=True)
-    yolo.to('cpu')
+    yolo.to(device)
     return yolo
     # yolo = YOLO("models/YOLO_08_30.pt")
     # yolo.to('cpu')
@@ -119,8 +124,6 @@ st.write("""
          # VectorCAM Stephensi Detector 06/10/2024
          """
          )
-
-device = torch.device("cpu")
 
 with st.spinner("Models are loading..."):
     st.write("#### Models:")
