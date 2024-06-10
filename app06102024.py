@@ -75,7 +75,43 @@ def yolo_crop(image):
        st.write("No mosquito detected")
     return image
 
+def preprocess_image(image):
+    t = transforms.Compose([
+        transforms.Resize([300,300]),
+        transforms.ToTensor(),
+    ])
+    image = t(image)
+    return image
 
+def upload_predict(upload_image, model):
+    """
+    Perform image classification on a given image using a pre-trained model.
+
+    Args:
+    - upload_image: A PIL Image object representing the image to be classified.
+    - model: A PyTorch model object that has been trained on image classification.
+
+    Returns:
+    - pred_class: An integer representing the predicted class label of the image.
+    - probab_value: A float representing the predicted class probability of the image.
+    """
+    inputs = preprocess_image(upload_image)
+    img_tensor = inputs.unsqueeze(0)
+
+    # Run the model
+    output = model(img_tensor)
+    st.write(output.detach().numpy())
+    # get softmax of output
+
+    #output = F.softmax(output, dim=1)
+
+    # probab, pred = torch.max(output, 1)
+    # print(output, pred, probab, probab.item())
+    # pred_class = pred.item()
+    # probab_value = probab.item()
+
+    
+    return # pred_class, probab_value
 
 # Main Code Block
 
@@ -89,22 +125,15 @@ device = torch.device("cpu")
 with st.spinner("Models are loading..."):
     st.write("#### Models:")
     model = load_model()
-    yolo = load_yolo_model()
 
 file = st.file_uploader("Upload the image to be classified", type=["jpg", "png"])
 
-transforms = transforms.Compose([
-    transforms.Resize([300,300]),
-    transforms.ToTensor(),
-])
-
-species_all = ["Anopheles Stephensi, Not Anopheles Stephensi"]
+species_all = ["Not Anopheles Stephensi, Anopheles Stephensi"]
 
 if file is None:
     st.text("#### Please upload an image file!")
 else:
     image = Image.open(file)
-    # image.resize((640, 480))
 
     # Open the image
     image_disp = image.copy()
@@ -125,3 +154,6 @@ else:
     image_disp = image.copy()
     image_disp.thumbnail(max_size)
     st.image(image_disp, use_column_width= False)
+
+    ### CLASSIFY IMAGE
+    upload_predict(image, model)
