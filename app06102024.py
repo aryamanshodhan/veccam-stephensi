@@ -103,8 +103,7 @@ def upload_predict(upload_image, model):
     pred_class = pred.item()
     probab_value = probab.item()
 
-    
-    # return pred_class, probab_value
+    return pred_class, probab_value
 
 # Main Code Block
 
@@ -147,6 +146,6 @@ else:
     st.image(image_disp, use_column_width= False)
 
     ### CLASSIFY IMAGE
-    upload_predict(image, model)
-    # st.write("### Species: ",species_all[label])
-    # st.write(f"#### Confidence : {score*100:.2f} % ")
+    label, score = upload_predict(image, model)
+    st.write("### Species: ",species_all[label])
+    st.write(f"#### Confidence : {score*100:.2f} % ")
