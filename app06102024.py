@@ -118,7 +118,7 @@ with st.spinner("Models are loading..."):
 
 file = st.file_uploader("Upload the image to be classified", type=["jpg", "png"])
 
-species_all = ["Not Anopheles Stephensi, Anopheles Stephensi"]
+species_all = ["Not Anopheles Stephensi", "Anopheles Stephensi"]
 
 if file is None:
     st.text("#### Please upload an image file!")
@@ -147,5 +147,5 @@ else:
 
     ### CLASSIFY IMAGE
     label, score = upload_predict(image, model)
-    st.write("### Species: ", label)
+    st.write("### Species: ", species_all[label])
     st.write(f"#### Confidence : {score*100:.2f} % ")
