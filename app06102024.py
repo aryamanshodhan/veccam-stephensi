@@ -104,6 +104,7 @@ if file is None:
     st.text("#### Please upload an image file!")
 else:
     image = Image.open(file)
+    image.resize((640, 480))
 
     # Open the image
     image_disp = image.copy()
