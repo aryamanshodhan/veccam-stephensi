@@ -103,7 +103,7 @@ def upload_predict(upload_image, model):
     # Run the model
     model.eval()  # Ensure the model is in evaluation mode
     with torch.no_grad():  # Disable gradient calculation for inference
-        output = model(inputs)
+        output = model.forward(inputs)
     
     st.write(output.detach().cpu().numpy())
     # # get softmax of output
