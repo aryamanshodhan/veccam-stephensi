@@ -119,3 +119,9 @@ else:
     genus,conf,yolo_cropped_image = yolo_crop(image)
     st.write("### Shape of the cropped image is", yolo_cropped_image.size)
 
+    ### PAD IMAGE
+    image = pad_image_to_square(yolo_cropped_image)
+    st.write("### Cropped and Padded Image")
+    image_disp = image.copy()
+    image_disp.thumbnail(max_size)
+    st.image(image_disp, use_column_width= False)
