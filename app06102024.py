@@ -8,9 +8,6 @@ from util_functions import pad_image_to_square
 from ultralytics import YOLO
 import cv2
 
-# import ssl
-# ssl._create_default_https_context = ssl._create_unverified_context
-
 if torch.cuda.is_available():
     device = torch.device('cuda')
 else:
