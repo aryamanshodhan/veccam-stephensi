@@ -8,10 +8,11 @@ from util_functions import pad_image_to_square
 from ultralytics import YOLO
 import cv2
 
-if torch.cuda.is_available():
-    device = torch.device('cuda')
-else:
-    device = torch.device('cpu')
+device = torch.device("cuda")
+# if torch.cuda.is_available():
+#     device = torch.device('cuda')
+# else:
+#     device = torch.device('cpu')
 
 @st.cache_resource
 def load_model(): 
