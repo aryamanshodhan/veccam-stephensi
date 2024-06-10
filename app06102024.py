@@ -5,6 +5,7 @@ import torch
 from torchvision import transforms
 import torch.nn.functional as F
 from util_functions import pad_image_to_square
+import cv2
 
 @st.cache_resource
 def load_model(): 
