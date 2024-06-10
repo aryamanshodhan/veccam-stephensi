@@ -28,7 +28,7 @@ def load_yolo_model():
     Returns:
         yolo: A TorchHub model object representing the YOLOv5 model.
     """
-    yolo = YOLO("models/yolo_best_0610.pt")
+    yolo = YOLO("models/YOLO_08_30.pt")
     yolo.to('cpu')
     st.write("yolo_best_0610.pt loaded successfully!")
     return yolo
