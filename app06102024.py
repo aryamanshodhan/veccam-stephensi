@@ -147,5 +147,5 @@ else:
 
     ### CLASSIFY IMAGE
     label, score = upload_predict(image, model)
-    # st.write("### Species: ",species_all[label])
+    st.write("### Species: ", label)
     st.write(f"#### Confidence : {score*100:.2f} % ")
