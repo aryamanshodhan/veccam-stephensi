@@ -5,8 +5,6 @@ import torch
 from torchvision import transforms
 import torch.nn.functional as F
 from util_functions import pad_image_to_square
-from ultralytics import YOLO
-import cv2
 
 device = torch.device('cpu')
 
@@ -19,9 +17,6 @@ def load_model():
         model (torch.nn.Module): The loaded PyTorch model.
     """
     model = torch.load("models/species_best_0610.pt", map_location=device)
-    model = model.to(device)
-    for parameter in model.parameters():
-        parameter = parameter.to(device)
     st.write("species_best_0610.pt loaded successfully!")
     return model
 
@@ -37,10 +32,6 @@ def load_yolo_model():
     yolo = torch.hub.load('ultralytics/yolov5', 'custom', path='models/yolo_best_0610.pt', force_reload=True)
     yolo = yolo.to(device)
     return yolo
-    # yolo = YOLO("models/YOLO_08_30.pt")
-    # yolo.to('cpu')
-    # st.write("yolo_best_0610.pt loaded successfully!")
-    # return yolo
 
 def yolo_crop(image):
     """Apply YOLO object detection on an image and crop it around the detected mosquito.
@@ -83,7 +74,7 @@ def preprocess_image(image):
         transforms.Resize([300,300]),
         transforms.ToTensor(),
     ])
-    image = t(image).unsqueeze(0)
+    image = t(image)
     return image
 
 def upload_predict(upload_image, model):
@@ -98,14 +89,11 @@ def upload_predict(upload_image, model):
     - pred_class: An integer representing the predicted class label of the image.
     - probab_value: A float representing the predicted class probability of the image.
     """
-    inputs = preprocess_image(upload_image).to(device)
+    inputs = preprocess_image(upload_image)
+    img_tensor = inputs.unsqueeze(0)
 
-    # Run the model
-    model.eval()  # Ensure the model is in evaluation mode
-    with torch.no_grad():  # Disable gradient calculation for inference
-        output = model.forward(inputs)
-    
-    st.write(output.detach().cpu().numpy())
+    output = model(img_tensor)
+    st.write(output.detach().numpy())
     # # get softmax of output
 
     # #output = F.softmax(output, dim=1)
