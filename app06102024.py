@@ -64,10 +64,10 @@ def yolo_crop(image):
     image_np = np.array(image_copy)
 
     # Get bounding box coordinates
-    xmin = int(results.xyxy[0][0].item())
-    ymin = int(results.xyxy[0][1].item())
-    xmax = int(results.xyxy[0][2].item())
-    ymax = int(results.xyxy[0][3].item())
+    xmin = int(results.xyxy[0].numpy()[0][0])
+    ymin = int(results.xyxy[0].numpy()[0][1])
+    xmax = int(results.xyxy[0].numpy()[0][2])
+    ymax = int(results.xyxy[0].numpy()[0][3])
 
     # Modify the NumPy array (e.g., setting bounding box area to black)
     image_np[ymin:ymax, xmin:xmax] = 0
