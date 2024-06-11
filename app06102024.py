@@ -150,6 +150,7 @@ if file is None:
     st.text("### Please upload an image file!")
 else:
     image = Image.open(file)
+    image = ImageOps.exif_transpose(image)
 
     # Open the image
     image_disp = image.copy()
