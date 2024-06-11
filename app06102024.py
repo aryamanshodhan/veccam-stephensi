@@ -1,182 +1,3 @@
-# import streamlit as st
-# from PIL import Image, ImageOps
-# import numpy as np
-# import torch
-# from torchvision import transforms
-# import torch.nn.functional as F
-# from util_functions import pad_image_to_square
-
-# device = torch.device('cpu')
-
-# @st.cache_resource
-# def load_model(): 
-#     """
-#     Load PyTorch model from disk and move it to the appropriate device.
-
-#     Returns:
-#         model (torch.nn.Module): The loaded PyTorch model.
-#     """
-#     model = torch.load("models/species_best_0610.pt", map_location=device)
-#     model = model.module
-#     st.write("species_best_0610.pt loaded successfully!")
-#     return model
-
-# @st.cache_resource
-# def load_yolo_model():
-#     """
-#     Loads a custom YOLOv5 model from a local path and sends it to the CPU.
-
-#     Returns:
-#         yolo: A TorchHub model object representing the YOLOv5 model.
-#     """
-#     torch.hub._validate_not_a_forked_repo=lambda a,b,c: True
-#     yolo = torch.hub.load('ultralytics/yolov5', 'custom', path='models/yolo_best_0610.pt', force_reload=True)
-#     yolo = yolo.to(device)
-#     return yolo
-
-# def yolo_crop(image):
-#     """Apply YOLO object detection on an image and crop it around the detected mosquito.
-
-#     Args:
-#         image (PIL.Image.Image): Input image to crop.
-
-#     Returns:
-#         PIL.Image.Image: Cropped image centered around the detected mosquito.
-
-#     Raises:
-#         TypeError: If the input image is not a PIL image.
-
-#     Note:
-#         This function requires the `load_yolo` function to be defined and available in the current namespace.
-#         The YOLO model used by `load_yolo` must be able to detect mosquitoes in the input image.
-#     """
-#     orig_width, orig_height = image.size
-#     if (orig_width > orig_height):
-#         image_copy = image.copy().resize((640, 480))
-#     else:
-#         image_copy = image.copy().resize((480, 640))
-#     st.image(image)
-    
-#     resize_width, resize_height = image_copy.size
-#     yolo = load_yolo_model()
-#     results = yolo(image_copy)
-#     # Convert image to NumPy array for modification
-#     image_np = np.array(image_copy)
-
-#     # Get bounding box coordinates
-#     xmin = int(results.xyxy[0].numpy()[0][0])
-#     ymin = int(results.xyxy[0].numpy()[0][1])
-#     xmax = int(results.xyxy[0].numpy()[0][2])
-#     ymax = int(results.xyxy[0].numpy()[0][3])
-
-#     # Modify the NumPy array (e.g., setting bounding box area to black)
-#     image_np[ymin:ymax, xmin:xmax] = 0
-
-#     # Convert back to PIL Image
-#     image_modified = Image.fromarray(image_np)
-    
-#     st.write("### Modified Image")
-#     st.image(image_modified)
-#     try: 
-#        # crop the image
-#         xmin = int((results.xyxy[0].numpy()[0][0]) * orig_width / resize_width)
-#         ymin = int((results.xyxy[0].numpy()[0][1]) * orig_height / resize_height)
-#         xmax = int((results.xyxy[0].numpy()[0][2]) * orig_width / resize_width)
-#         ymax = int((results.xyxy[0].numpy()[0][3]) * orig_height / resize_height)
-#         st.write(str(xmin), str(ymin), str(xmax), str(ymax))
-#         conf0=results.xyxy[0].numpy()[0][4]
-#         class0=results.xyxy[0].numpy()[0][-1]
-#         im_crop = image.crop((ymin, xmin, ymax, xmax))
-#         print("Image cropped successfully!")
-#         print('Genus',class0)
-#         return class0,conf0,im_crop
-
-#     except:
-#        st.write("No mosquito detected")
-#     return image
-
-# def preprocess_image(image):
-#     t = transforms.Compose([
-#         transforms.Resize([300, 300]),
-#         transforms.ToTensor(),
-#         transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
-#     ])
-#     image = t(image)
-#     return image
-
-# def upload_predict(upload_image, model):
-#     """
-#     Perform image classification on a given image using a pre-trained model.
-
-#     Args:
-#     - upload_image: A PIL Image object representing the image to be classified.
-#     - model: A PyTorch model object that has been trained on image classification.
-
-#     Returns:
-#     - pred_class: An integer representing the predicted class label of the image.
-#     - probab_value: A float representing the predicted class probability of the image.
-#     """
-#     inputs = preprocess_image(upload_image)
-#     img_tensor = inputs.unsqueeze(0)
-#     output = model(img_tensor)
-
-#     # get softmax of output
-#     output = F.softmax(output, dim=1)
-#     st.write(output.detach().numpy())
-
-#     probab, pred = torch.max(output, 1)
-#     print(output, pred, probab, probab.item())
-#     pred_class = pred.item()
-#     probab_value = probab.item()
-
-#     return pred_class, probab_value
-
-# # Main Code Block
-
-# st.write("""
-#          # VectorCAM Stephensi Detector 06/10/2024
-#          """
-#          )
-
-# with st.spinner("Models are loading..."):
-#     st.write("#### Models:")
-#     model = load_model()
-
-# file = st.file_uploader("Upload the image to be classified", type=["jpg", "png"])
-
-# species_all = ["Not Anopheles Stephensi", "Anopheles Stephensi"]
-
-# if file is None:
-#     st.text("### Please upload an image file!")
-# else:
-#     image = Image.open(file)
-
-#     # Open the image
-#     image_disp = image.copy()
-
-#     # Resize the image
-#     max_size = (400, 400)
-#     image_disp.thumbnail(max_size)
-#     st.write("### Uploaded Image")
-#     st.image(image_disp, use_column_width= False)
-
-#     ### YOLO CROP
-#     genus,conf,yolo_cropped_image = yolo_crop(image)
-#     st.write("### Shape of the cropped image is", yolo_cropped_image.size)
-
-#     ### PAD IMAGE
-#     image = pad_image_to_square(yolo_cropped_image)
-#     st.write("### Cropped and Padded Image")
-#     image_disp = image.copy()
-#     image_disp.thumbnail(max_size)
-#     st.image(image_disp, use_column_width= False)
-
-#     ### CLASSIFY IMAGE
-#     label, score = upload_predict(image, model)
-#     st.write("### Species: ", species_all[label])
-#     st.write(f"#### Confidence : {score*100:.2f} % ")
-
-# %%writefile app.py
 import streamlit as st
 from PIL import Image, ImageOps
 import numpy as np
@@ -184,54 +5,34 @@ import torch
 from torchvision import transforms
 import torch.nn.functional as F
 from util_functions import pad_image_to_square
-import cv2
- 
-st.write("""
-         # VectorCAM handheld
-         """
-         )
 
-device=torch.device("cpu")
+device = torch.device('cpu')
 
 @st.cache_resource
-def load_model():
-  """
-  Load PyTorch model from disk and move it to the appropriate device.
+def load_model(): 
+    """
+    Load PyTorch model from disk and move it to the appropriate device.
 
-  Returns:
-      model (torch.nn.Module): The loaded PyTorch model.
-  """
-  model= torch.load('models/species_best_0610.pt',map_location=torch.device('cpu'))
-  model=model.module
-  st.write('species_best_0610.pt')
-  model = model.to(device)
-  return model
+    Returns:
+        model (torch.nn.Module): The loaded PyTorch model.
+    """
+    model = torch.load("models/species_best_0610.pt", map_location=device)
+    model = model.module
+    st.write("species_best_0610.pt loaded successfully!")
+    return model
 
 @st.cache_resource
-def load_yolo():
-  """
-  Loads a custom YOLOv5 model from a local path and sends it to the CPU.
+def load_yolo_model():
+    """
+    Loads a custom YOLOv5 model from a local path and sends it to the CPU.
 
-  Returns:
-      yolo: A TorchHub model object representing the YOLOv5 model.
-  """
-  yolo = torch.hub.load('ultralytics/yolov5', 'custom', path='models/yolo_best_0610.pt', force_reload=True)
-  yolo.to('cpu')
-  return yolo
-
-with st.spinner('Model is being loaded..'):
-  st.write("#### Models :")
-  model=load_model()
- 
-file = st.file_uploader("Upload the image to be classified", type=["jpg", "png"])
-st.set_option('deprecation.showfileUploaderEncoding', False)
-
-
-basicTrans = transforms.Compose([ 
-                                transforms.Resize([300,300]),
-                                transforms.ToTensor(),
-                                transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
-                                ])    
+    Returns:
+        yolo: A TorchHub model object representing the YOLOv5 model.
+    """
+    torch.hub._validate_not_a_forked_repo=lambda a,b,c: True
+    yolo = torch.hub.load('ultralytics/yolov5', 'custom', path='models/yolo_best_0610.pt', force_reload=True)
+    yolo = yolo.to(device)
+    return yolo
 
 def yolo_crop(image):
     """Apply YOLO object detection on an image and crop it around the detected mosquito.
@@ -249,18 +50,43 @@ def yolo_crop(image):
         This function requires the `load_yolo` function to be defined and available in the current namespace.
         The YOLO model used by `load_yolo` must be able to detect mosquitoes in the input image.
     """
+    orig_width, orig_height = image.size
+    if (orig_width > orig_height):
+        image_copy = image.copy().resize((640, 480))
+    else:
+        image_copy = image.copy().resize((480, 640))
+    st.image(image)
+    
+    resize_width, resize_height = image_copy.size
+    yolo = load_yolo_model()
+    results = yolo(image_copy)
+    # Convert image to NumPy array for modification
+    image_np = np.array(image_copy)
 
-    yolo = load_yolo()
-    results = yolo(image)
+    # Get bounding box coordinates
+    xmin = int(results.xyxy[0].numpy()[0][0])
+    ymin = int(results.xyxy[0].numpy()[0][1])
+    xmax = int(results.xyxy[0].numpy()[0][2])
+    ymax = int(results.xyxy[0].numpy()[0][3])
+
+    # Modify the NumPy array (e.g., setting bounding box area to black)
+    image_np[ymin:ymax, xmin:xmax] = 0
+
+    # Convert back to PIL Image
+    image_modified = Image.fromarray(image_np)
+    
+    st.write("### Modified Image")
+    st.image(image_modified)
     try: 
        # crop the image
-        xmin = int(results.xyxy[0].numpy()[0][0])
-        ymin = int(results.xyxy[0].numpy()[0][1])
-        xmax = int(results.xyxy[0].numpy()[0][2])
-        ymax = int(results.xyxy[0].numpy()[0][3])
+        xmin = int((results.xyxy[0].numpy()[0][0]) * orig_width / resize_width)
+        ymin = int((results.xyxy[0].numpy()[0][1]) * orig_height / resize_height)
+        xmax = int((results.xyxy[0].numpy()[0][2]) * orig_width / resize_width)
+        ymax = int((results.xyxy[0].numpy()[0][3]) * orig_height / resize_height)
+        st.write(str(xmin), str(ymin), str(xmax), str(ymax))
         conf0=results.xyxy[0].numpy()[0][4]
         class0=results.xyxy[0].numpy()[0][-1]
-        im_crop = image.crop((xmin, ymin, xmax , ymax))
+        im_crop = image.crop((ymin, xmin, ymax, xmax))
         print("Image cropped successfully!")
         print('Genus',class0)
         return class0,conf0,im_crop
@@ -270,11 +96,13 @@ def yolo_crop(image):
     return image
 
 def preprocess_image(image):
-    image = basicTrans(image)
+    t = transforms.Compose([
+        transforms.Resize([300, 300]),
+        transforms.ToTensor(),
+        transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
+    ])
+    image = t(image)
     return image
- 
-species_all = ["Not An. stephensi",
-           "An.stephensi"]             
 
 def upload_predict(upload_image, model):
     """
@@ -290,27 +118,36 @@ def upload_predict(upload_image, model):
     """
     inputs = preprocess_image(upload_image)
     img_tensor = inputs.unsqueeze(0)
-
-    # Run the model
     output = model(img_tensor)
- 
-    # get softmax of output
 
-    #output = F.softmax(output, dim=1)
+    # get softmax of output
+    output = F.softmax(output, dim=1)
+    st.write(output.detach().numpy())
 
     probab, pred = torch.max(output, 1)
     print(output, pred, probab, probab.item())
-    st.write(output.detach().numpy())
     pred_class = pred.item()
     probab_value = probab.item()
 
-    
     return pred_class, probab_value
 
-# Main code block
+# Main Code Block
+
+st.write("""
+         # VectorCAM Stephensi Detector 06/10/2024
+         """
+         )
+
+with st.spinner("Models are loading..."):
+    st.write("#### Models:")
+    model = load_model()
+
+file = st.file_uploader("Upload the image to be classified", type=["jpg", "png"])
+
+species_all = ["Not Anopheles Stephensi", "Anopheles Stephensi"]
 
 if file is None:
-    st.text(" ###### Please upload an image file!")
+    st.text("### Please upload an image file!")
 else:
     image = Image.open(file)
 
@@ -325,8 +162,6 @@ else:
 
     ### YOLO CROP
     genus,conf,yolo_cropped_image = yolo_crop(image)
-    #st.write("### Cropped Image")
-    # st.write shape of image
     st.write("### Shape of the cropped image is", yolo_cropped_image.size)
 
     ### PAD IMAGE
@@ -335,8 +170,8 @@ else:
     image_disp = image.copy()
     image_disp.thumbnail(max_size)
     st.image(image_disp, use_column_width= False)
- 
-    ### CLASSIFY
-    label, score= upload_predict(image, model)
-    st.write("### Species: ",species_all[label])
+
+    ### CLASSIFY IMAGE
+    label, score = upload_predict(image, model)
+    st.write("### Species: ", species_all[label])
     st.write(f"#### Confidence : {score*100:.2f} % ")
