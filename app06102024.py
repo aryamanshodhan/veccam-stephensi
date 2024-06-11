@@ -55,10 +55,10 @@ def yolo_crop(image):
     results = yolo(image)
     try: 
        # crop the image
-        xmin = int(results.xyxy[0].numpy()[0][0])
-        ymin = int(results.xyxy[0].numpy()[0][1])
-        xmax = int(results.xyxy[0].numpy()[0][2])
-        ymax = int(results.xyxy[0].numpy()[0][3])
+        xmin = int((results.xyxy[0].numpy()[0][0]) * 4160 / 640)
+        ymin = int((results.xyxy[0].numpy()[0][1]) * 3120 / 480)
+        xmax = int((results.xyxy[0].numpy()[0][2]) * 4160 / 640)
+        ymax = int((results.xyxy[0].numpy()[0][3]) * 3120 / 480)
         conf0=results.xyxy[0].numpy()[0][4]
         class0=results.xyxy[0].numpy()[0][-1]
         im_crop = image.crop((xmin, ymin, xmax , ymax))
@@ -124,6 +124,7 @@ if file is None:
     st.text("### Please upload an image file!")
 else:
     image = Image.open(file)
+    image = image.resize((640, 480))
 
     # Open the image
     image_disp = image.copy()
