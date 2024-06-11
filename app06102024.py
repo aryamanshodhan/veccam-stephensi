@@ -130,9 +130,9 @@ else:
     # Open the image
     image_disp = image.copy()
 
-    # Resize the image
-    max_size = (400, 400)
-    image_disp.thumbnail(max_size)
+    # # Resize the image
+    # max_size = (400, 400)
+    # image_disp.thumbnail(max_size)
     st.write("### Uploaded Image")
     st.image(image_disp, use_column_width= False)
 
@@ -144,7 +144,7 @@ else:
     image = pad_image_to_square(yolo_cropped_image)
     st.write("### Cropped and Padded Image")
     image_disp = image.copy()
-    image_disp.thumbnail(max_size)
+    # image_disp.thumbnail(max_size)
     st.image(image_disp, use_column_width= False)
 
     ### CLASSIFY IMAGE
