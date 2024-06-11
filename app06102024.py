@@ -60,11 +60,23 @@ def yolo_crop(image):
     resize_width, resize_height = image_copy.size
     yolo = load_yolo_model()
     results = yolo(image_copy)
-    image_copy[int(results.xyxy[0].numpy()[0][0])] = 0
-    image_copy[int(results.xyxy[0].numpy()[0][1])] = 0
-    image_copy[int(results.xyxy[0].numpy()[0][2])] = 0
-    image_copy[int(results.xyxy[0].numpy()[0][3])] = 0
-    st.image(image_copy)
+    # Convert image to NumPy array for modification
+    image_np = np.array(image_copy)
+
+    # Get bounding box coordinates
+    xmin = int(results.xyxy[0][0].item())
+    ymin = int(results.xyxy[0][1].item())
+    xmax = int(results.xyxy[0][2].item())
+    ymax = int(results.xyxy[0][3].item())
+
+    # Modify the NumPy array (e.g., setting bounding box area to black)
+    image_np[ymin:ymax, xmin:xmax] = 0
+
+    # Convert back to PIL Image
+    image_modified = Image.fromarray(image_np)
+    
+    st.write("### Modified Image")
+    st.image(image_modified)
     try: 
        # crop the image
         xmin = int((results.xyxy[0].numpy()[0][0]) * orig_width / resize_width)
