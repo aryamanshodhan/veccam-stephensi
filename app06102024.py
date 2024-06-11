@@ -51,15 +51,15 @@ def yolo_crop(image):
         The YOLO model used by `load_yolo` must be able to detect mosquitoes in the input image.
     """
 
-    image = image.resize((640, 480))
+    image = image.resize((480, 640))
     yolo = load_yolo_model()
     results = yolo(image)
     try: 
        # crop the image
-        xmin = int((results.xyxy[0].numpy()[0][0]) * 4160 / 640)
-        ymin = int((results.xyxy[0].numpy()[0][1]) * 3120 / 480)
-        xmax = int((results.xyxy[0].numpy()[0][2]) * 4160 / 640)
-        ymax = int((results.xyxy[0].numpy()[0][3]) * 3120 / 480)
+        xmin = int((results.xyxy[0].numpy()[0][0]) * 3120 / 480)
+        ymin = int((results.xyxy[0].numpy()[0][1]) * 4160 / 640)
+        xmax = int((results.xyxy[0].numpy()[0][2]) * 3120 / 480)
+        ymax = int((results.xyxy[0].numpy()[0][3]) * 4160 / 640)
         conf0=results.xyxy[0].numpy()[0][4]
         class0=results.xyxy[0].numpy()[0][-1]
         im_crop = image.crop((xmin, ymin, xmax , ymax))
