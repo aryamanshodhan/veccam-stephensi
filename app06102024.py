@@ -51,6 +51,7 @@ def yolo_crop(image):
         The YOLO model used by `load_yolo` must be able to detect mosquitoes in the input image.
     """
 
+    image = image.resize((640, 480))
     yolo = load_yolo_model()
     results = yolo(image)
     try: 
@@ -124,7 +125,6 @@ if file is None:
     st.text("### Please upload an image file!")
 else:
     image = Image.open(file)
-    image = image.resize((640, 480))
 
     # Open the image
     image_disp = image.copy()
