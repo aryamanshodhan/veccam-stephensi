@@ -121,7 +121,7 @@ file = st.file_uploader("Upload the image to be classified", type=["jpg", "png"]
 species_all = ["Not Anopheles Stephensi", "Anopheles Stephensi"]
 
 if file is None:
-    st.text("#### Please upload an image file!")
+    st.text("### Please upload an image file!")
 else:
     image = Image.open(file)
 
