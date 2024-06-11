@@ -67,7 +67,7 @@ def yolo_crop(image):
         st.write(str(xmin), str(ymin), str(xmax), str(ymax))
         conf0=results.xyxy[0].numpy()[0][4]
         class0=results.xyxy[0].numpy()[0][-1]
-        im_crop = image.crop((ymin, xmin, ymax, xmax))
+        im_crop = image.crop((xmin, ymin, xmax, ymax))
         print("Image cropped successfully!")
         print('Genus',class0)
         return class0,conf0,im_crop
