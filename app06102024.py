@@ -30,7 +30,7 @@ def load_yolo_model():
         yolo: A TorchHub model object representing the YOLOv5 model.
     """
     torch.hub._validate_not_a_forked_repo=lambda a,b,c: True
-    yolo = torch.hub.load('ultralytics/yolov5', 'custom', path='models/yolo_best_0610.pt', force_reload=True)
+    yolo = torch.hub.load('ultralytics/yolov5', 'custom', path='models/YOLO_08_30.pt', force_reload=True)
     yolo = yolo.to(device)
     return yolo
 
