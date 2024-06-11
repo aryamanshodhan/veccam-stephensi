@@ -51,15 +51,19 @@ def yolo_crop(image):
         The YOLO model used by `load_yolo` must be able to detect mosquitoes in the input image.
     """
 
-    image_copy = image.copy().resize((640, 480))
+    image_copy = image#.copy().resize((640, 480))
     yolo = load_yolo_model()
     results = yolo(image_copy)
     try: 
        # crop the image
-        xmin = int((results.xyxy[0].numpy()[0][0]) * 4160 / 640)
-        ymin = int((results.xyxy[0].numpy()[0][1]) * 3120 / 480)
-        xmax = int((results.xyxy[0].numpy()[0][2]) * 4160 / 640)
-        ymax = int((results.xyxy[0].numpy()[0][3]) * 3120 / 480)
+        xmin = int((results.xyxy[0].numpy()[0][0]))
+        ymin = int((results.xyxy[0].numpy()[0][1]))
+        xmax = int((results.xyxy[0].numpy()[0][2]))
+        ymax = int((results.xyxy[0].numpy()[0][3]))
+        # xmin = int((results.xyxy[0].numpy()[0][0]) * 4160 / 640)
+        # ymin = int((results.xyxy[0].numpy()[0][1]) * 3120 / 480)
+        # xmax = int((results.xyxy[0].numpy()[0][2]) * 4160 / 640)
+        # ymax = int((results.xyxy[0].numpy()[0][3]) * 3120 / 480)
         st.write(str(xmin), str(ymin), str(xmax), str(ymax))
         conf0=results.xyxy[0].numpy()[0][4]
         class0=results.xyxy[0].numpy()[0][-1]
