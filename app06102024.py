@@ -132,12 +132,13 @@ if file is None:
 else:
     image = Image.open(file)
 
-    # Open the image
-    image_disp = image.copy()
-
     # Resize the image
-    max_size = (400, 400)
-    image_disp.thumbnail(max_size)
+    width, height = image.size
+    if (width > height):
+        image_disp = image.copy().resize((640, 480))
+    else:
+        image_disp = image.copy().resize((480, 640))
+
     st.write("### Uploaded Image")
     st.image(image_disp, use_column_width= False)
 
@@ -148,8 +149,6 @@ else:
     ### PAD IMAGE
     image = pad_image_to_square(yolo_cropped_image)
     st.write("### Cropped and Padded Image")
-    image_disp = image.copy()
-    image_disp.thumbnail(max_size)
     st.image(image_disp, use_column_width= False)
 
     ### CLASSIFY IMAGE
