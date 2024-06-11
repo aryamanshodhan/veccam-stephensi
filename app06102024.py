@@ -55,6 +55,8 @@ def yolo_crop(image):
         image_copy = image.copy().resize((640, 480))
     else:
         image_copy = image.copy().resize((480, 640))
+    st.image(image)
+    st.image(image_copy)
     resize_width, resize_height = image_copy.size
     yolo = load_yolo_model()
     results = yolo(image_copy)
