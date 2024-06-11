@@ -70,7 +70,7 @@ def yolo_crop(image):
     ymax = int(results.xyxy[0].numpy()[0][3])
 
     # Modify the NumPy array (e.g., setting bounding box area to black)
-    image_np[ymin:ymax, xmin:xmax] = 0
+    image_np[xmin:xmax, ymin:ymax] = 0
 
     # Convert back to PIL Image
     image_modified = Image.fromarray(image_np)
