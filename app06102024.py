@@ -30,7 +30,7 @@ def load_yolo_model():
         yolo: A TorchHub model object representing the YOLOv5 model.
     """
     torch.hub._validate_not_a_forked_repo=lambda a,b,c: True
-    yolo = torch.hub.load('ultralytics/yolov5', 'custom', path='models/yolo_best_0610.pt', force_reload=True)
+    yolo = torch.hub.load('ultralytics/yolov5', 'custom', path='models/YOLO_08_30.pt', force_reload=True)
     yolo = yolo.to(device)
     return yolo
 
@@ -74,7 +74,9 @@ def yolo_crop(image):
 
 def preprocess_image(image):
     t = transforms.Compose([
+        transforms.Resize([300, 300]),
         transforms.ToTensor(),
+        transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
     ])
     image = t(image)
     return image
