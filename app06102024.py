@@ -65,7 +65,6 @@ def yolo_crop(image):
         ymin = int((results.xyxy[0].numpy()[0][1]) * orig_height / resize_height)
         xmax = int((results.xyxy[0].numpy()[0][2]) * orig_width / resize_width)
         ymax = int((results.xyxy[0].numpy()[0][3]) * orig_height / resize_height)
-        st.write(str(xmin), str(ymin), str(xmax), str(ymax))
         conf0=results.xyxy[0].numpy()[0][4]
         class0=results.xyxy[0].numpy()[0][-1]
         im_crop = image.crop((xmin, ymin, xmax, ymax))
