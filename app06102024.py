@@ -125,6 +125,14 @@ def upload_predict(upload_image, model):
 
     return pred_class, probab_value
 
+def preprocess_image_multiclass(image):
+    t = transforms.Compose([
+        transforms.Resize([300, 300]),
+        transforms.ToTensor(),
+    ])
+    image = t(image)
+    return image
+
 def upload_predict_multiclass(upload_image, model):
     """
     Perform image classification on a given image using a pre-trained model.
@@ -137,7 +145,7 @@ def upload_predict_multiclass(upload_image, model):
     - pred_class: An integer representing the predicted class label of the image.
     - probab_value: A float representing the predicted class probability of the image.
     """
-    inputs = preprocess_image(upload_image)
+    inputs = preprocess_image_multiclass(upload_image)
     img_tensor = inputs.unsqueeze(0)
 
     # Run the model
