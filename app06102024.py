@@ -169,10 +169,10 @@ with st.spinner("Models are loading..."):
 
 file = st.file_uploader("Upload the image to be classified", type=["jpg", "png"])
 
-species_all = ["Not Anopheles Stephensi", "Anopheles Stephensi"]
-multiclass_species_all = ["An. funestus",
-                            "An. gambiae",
-                            "An. other",
+species_all = ["Not Anopheles stephensi", "Anopheles stephensi"]
+multiclass_species_all = ["Anopheles funestus",
+                            "Anopheles gambiae",
+                            "Anopheles other",
                             "Culex",
                             "Aedes",
                             "Mansonia",
