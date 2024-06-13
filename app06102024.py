@@ -22,19 +22,6 @@ def load_model():
     return model
 
 @st.cache_resource
-def load_multiclass_model():
-    """
-    Load PyTorch model from disk and move it to the appropriate device.
-
-    Returns:
-        model (torch.nn.Module): The loaded PyTorch model.
-    """
-    model= torch.jit.load('model/species_with_normalization_27_02_24.ptl', map_location = 'cpu')
-    st.write('species_with_normalization_27_02_24.ptl loaded successfully!')
-    model = model.to(device)
-    return model
-
-@st.cache_resource
 def load_yolo_model():
     """
     Loads a custom YOLOv5 model from a local path and sends it to the CPU.
@@ -125,43 +112,6 @@ def upload_predict(upload_image, model):
 
     return pred_class, probab_value
 
-def preprocess_multiclass_image(image):
-    t = transforms.Compose([
-        transforms.Resize([300, 300]),
-        transforms.ToTensor(),
-    ])
-    image = t(image)
-    return image
-
-def upload_predict_multiclass(upload_image, model):
-    """
-    Perform image classification on a given image using a pre-trained model.
-
-    Args:
-    - upload_image: A PIL Image object representing the image to be classified.
-    - model: A PyTorch model object that has been trained on image classification.
-
-    Returns:
-    - pred_class: An integer representing the predicted class label of the image.
-    - probab_value: A float representing the predicted class probability of the image.
-    """
-    inputs = preprocess_multiclass_image(upload_image)
-    img_tensor = inputs.unsqueeze(0)
-
-    # Run the model
-    output = model(img_tensor)
-    st.write(output.detach().numpy())
-    # get softmax of output
-    #output = F.softmax(output, dim=1)
-
-    probab, pred = torch.max(output, 1)
-    print(output, pred, probab, probab.item())
-    pred_class = pred.item()
-    probab_value = probab.item()
-
-    
-    return pred_class, probab_value
-
 # Main Code Block
 
 st.write("""
@@ -172,18 +122,10 @@ st.write("""
 with st.spinner("Models are loading..."):
     st.write("#### Models:")
     model = load_model()
-    multiclass_model = load_multiclass_model()
 
 file = st.file_uploader("Upload the image to be classified", type=["jpg", "png"])
 
 species_all = ["Not Anopheles Stephensi", "Anopheles Stephensi"]
-multiclass_species_all = ["An. funestus",
-                "An. gambiae",
-                "An. other",
-                "Culex",
-                "Aedes",
-                "Mansonia",
-                "Non-mosquito"]
 
 if file is None:
     st.text("### Please upload an image file!")
@@ -212,9 +154,6 @@ else:
     st.image(image_disp, use_column_width= False)
 
     ### CLASSIFY IMAGE
-    label, score = upload_predict(image.copy(), model)
+    label, score = upload_predict(image, model)
     st.write("### Species: ", species_all[label])
     st.write(f"#### Confidence : {score*100:.2f} % ")
-    if (label == 0):
-        multiclass_label, _= upload_predict(image.copy(), multiclass_model)
-        st.write("But might be:", species_all[label])
