@@ -29,9 +29,9 @@ def load_multiclass_model():
   Returns:
       model (torch.nn.Module): The loaded PyTorch model.
   """
-  model= torch.load('models/multiclass_model.pt', map_location=device)
-  model = model.module
-  st.write('multiclass_model.pt successfully loaded!')
+  model= torch.jit.load('models/species_with_normalization_27_02_24.ptl', map_location=device)
+  st.write('species_with_normalization_27_02_24.ptl')
+  model = model.to(device)
   return model
 
 @st.cache_resource
