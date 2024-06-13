@@ -152,7 +152,7 @@ def upload_predict_multiclass(upload_image, model):
     output = model(img_tensor)
     st.write(output.detach().numpy())
     # get softmax of output
-    #output = F.softmax(output, dim=1)
+    output = F.softmax(output, dim=1)
 
     probab, pred = torch.max(output, 1)
     print(output, pred, probab, probab.item())
