@@ -29,7 +29,7 @@ def load_multiclass_model():
     Returns:
         model (torch.nn.Module): The loaded PyTorch model.
     """
-    model= torch.jit.load('model/species_with_normalization_27_02_24.ptl', map_location = 'cpu')
+    model= torch.jit.load('models/species_with_normalization_27_02_24.ptl', map_location = 'cpu')
     st.write('species_with_normalization_27_02_24.ptl loaded successfully!')
     model = model.to(device)
     return model
