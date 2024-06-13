@@ -217,4 +217,4 @@ else:
     st.write(f"#### Confidence : {score*100:.2f} % ")
     if (label == 0):
         multiclass_label, _= upload_predict(image.copy(), multiclass_model)
-        st.write("But might be:", species_all[label])
+        st.write("But might be:", species_all[multiclass_label])
