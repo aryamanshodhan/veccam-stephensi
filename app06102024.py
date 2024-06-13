@@ -150,7 +150,6 @@ def upload_predict_multiclass(upload_image, model):
 
     # Run the model
     output = model(img_tensor)
-    st.write(output.detach().numpy())
     # get softmax of output
 
     #output = F.softmax(output, dim=1)
