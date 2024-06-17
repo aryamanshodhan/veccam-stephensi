@@ -218,6 +218,6 @@ else:
     if (label == 0):
         multiclass_label, _= upload_predict_multiclass(image, multiclass_model)
         if (multiclass_label == 2):
-            st.write("### But might be... Some other Anophilean which is not gambiae or funestus")
+            st.write("### But might be... Some other Anopheline which is not gambiae or funestus")
         else:
             st.write("### But might be... ", multiclass_species_all[multiclass_label])
