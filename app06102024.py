@@ -86,7 +86,7 @@ def yolo_crop(image):
         return class0,conf0,im_crop
 
     except:
-       st.write("No mosquito detected")
+       st.write("### No mosquito detected")
     return None, None, None
 
 def preprocess_image(image):
