@@ -87,7 +87,7 @@ def yolo_crop(image):
 
     except:
        st.write("No mosquito detected")
-    return image
+    return None, None, None
 
 def preprocess_image(image):
     t = transforms.Compose([
@@ -202,22 +202,23 @@ else:
 
     ### YOLO CROP
     genus,conf,yolo_cropped_image = yolo_crop(image)
-    st.write("### Shape of the cropped image is", yolo_cropped_image.size)
+    if genus is not None:
+        st.write("### Shape of the cropped image is", yolo_cropped_image.size)
 
-    ### PAD IMAGE
-    image = pad_image_to_square(yolo_cropped_image)
-    st.write("### Cropped and Padded Image")
-    image_disp = image.copy()
-    image_disp.thumbnail(max_size)
-    st.image(image_disp, use_column_width= False)
+        ### PAD IMAGE
+        image = pad_image_to_square(yolo_cropped_image)
+        st.write("### Cropped and Padded Image")
+        image_disp = image.copy()
+        image_disp.thumbnail(max_size)
+        st.image(image_disp, use_column_width= False)
 
-    ### CLASSIFY IMAGE
-    label, score = upload_predict(image, model)
-    st.write("### Species: ", species_all[label])
-    st.write(f"#### Confidence : {score*100:.2f} % ")
-    if (label == 0):
-        multiclass_label, _= upload_predict_multiclass(image, multiclass_model)
-        if (multiclass_label == 2):
-            st.write("### But might be... Some other Anopheline which is not gambiae or funestus")
-        else:
-            st.write("### But might be... ", multiclass_species_all[multiclass_label])
+        ### CLASSIFY IMAGE
+        label, score = upload_predict(image, model)
+        st.write("### Species: ", species_all[label])
+        st.write(f"#### Confidence : {score*100:.2f} % ")
+        if (label == 0):
+            multiclass_label, _= upload_predict_multiclass(image, multiclass_model)
+            if (multiclass_label == 2):
+                st.write("### But might be... Some other Anopheline which is not gambiae or funestus")
+            else:
+                st.write("### But might be... ", multiclass_species_all[multiclass_label])
